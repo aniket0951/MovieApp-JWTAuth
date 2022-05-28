@@ -15,6 +15,12 @@ from Utils.custom_jwt_whitelisted_tokens import WhiteListedJWTTokenUtil
 from rest_framework_jwt.utils import jwt_encode_handler, jwt_payload_handler
 from Utils.custome_permissions import IsPatientUser, user_object, BlacklistUpdateMethodPermission
 from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from Utils.utils import *
+from django.db.models import Q
+from Merchent.models import TheterInformation
+from Merchent.serilizer import TheterInformationSerializer
+
 
 # Create your views here.
 class UsersInfoModelViewSetAPIView(ModelViewSet):
@@ -137,3 +143,25 @@ class UserAddressModelViewSetAPIView(ModelViewSet):
     list_success_message = "User Address list successfully"
     update_success_message = "User Address updated successfully"
 
+    data = {
+        "message":None,
+        "data":None
+    }
+
+    @action(detail=False, methods=['GET'])
+    def get_therter_list_user_location(self, request):
+        user_id = request.user.id       
+        user_address = self.get_queryset().filter(Q(user__id=user_id)).first()
+        
+        if not user_address:
+            raise ValidationError("User address not found")
+   
+        theter_info = TheterInformation.objects.filter(state=user_address.state, city=user_address.city).all()
+        serializer = TheterInformationSerializer(theter_info, many=True)
+
+        self.data.update({
+            "data":serializer.data,
+            "message":"Theter information returned successfully"
+        })
+
+        return Response(self.data, status=status.HTTP_200_OK)  

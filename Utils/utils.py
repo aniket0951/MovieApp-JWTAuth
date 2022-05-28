@@ -1,4 +1,6 @@
 from django.utils.crypto import get_random_string
+from Authentication.models import UsersInfo
+from Utils.exceptions import InvalidParameterException, UserNotFoundException
 
 def get_4_digit_otp():
     OTP_LENGTH = 4
@@ -20,3 +22,11 @@ class Messages():
     def otp_generation_success():
         msg = "OTP generation successfully created"
         return msg
+
+def get_enduser_object(request):
+    try:
+        user = UsersInfo.objects.get(mobile=request.user)
+        return user 
+    except Exception as e:     
+        print("Exception: %s" % e)
+    return None

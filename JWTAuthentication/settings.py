@@ -136,6 +136,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'Utils.custom_jwt_authentication.JSONWebTokenAuthentication',
     ),
+    'EXCEPTION_HANDLER': 'Utils.exception_handler.custom_exception_handler',
 }
 
 
