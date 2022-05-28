@@ -2,7 +2,7 @@ from django.shortcuts import render
 from yaml import serialize
 from Utils.custome_viewsets import ModelViewSet
 from .models import *
-from .serializer import UsersInfoSerializer
+from .serializer import UsersInfoSerializer, UserAddressSerializer
 from rest_framework.decorators import action
 from Utils.exceptions import InvalidParameterException, UserNotFoundException, ValueMistMatchException, OTPExpiredException
 from rest_framework.response import Response
@@ -44,7 +44,7 @@ class UsersInfoModelViewSetAPIView(ModelViewSet):
             return [permission() for permission in permission_classes]
 
         if self.action == 'update':
-            permission_classes = [BlacklistUpdateMethodPermission]
+            permission_classes = [IsPatientUser | BlacklistUpdateMethodPermission]
             return [permission() for permission in permission_classes]
 
         return super().get_permissions()
@@ -126,44 +126,14 @@ class UsersInfoModelViewSetAPIView(ModelViewSet):
         }
         return Response(data, status=status.HTTP_200_OK)
 
-
         
+class UserAddressModelViewSetAPIView(ModelViewSet):
+    model = UserAddress
+    queryset = UserAddress.objects.all()
+    serializer_class = UserAddressSerializer
 
-class VerifyUsersModelViewSetAPIView(ModelViewSet):
-    permission_classes = [ IsPatientUser ]
-    model = UsersInfo
-    queryset =  UsersInfo.objects.all()
-    serializer_class = UsersInfoSerializer
-   
-    
-    create_success_message = 'Your registration completed successfully!'
-    list_success_message = 'Users list returned successfully!'
-    retrieve_success_message = 'User Information returned successfully!'
-    update_success_message = 'User Information updated successfully!'
+    create_success_message = "User Address created successfully"
+    retrieve_success_message = "User Address retrieved successfully"
+    list_success_message = "User Address list successfully"
+    update_success_message = "User Address updated successfully"
 
-    data = {
-        "data": None,
-        "message": None,
-    }
-    
-    def get_permissions(self):
-        if self.action in ['list', 'create', ]:
-            permission_classes = [AllowAny,]
-            return [permission() for permission in permission_classes]
-
-        if self.action in ['partial_update', 'retrieve', 'destroy']:
-            permission_classes = [IsPatientUser]
-            return [permission() for permission in permission_classes]
-
-        if self.action == 'update':
-            permission_classes = [BlacklistUpdateMethodPermission]
-            return [permission() for permission in permission_classes]
-
-        return super().get_permissions()
-
-
-    @action(detail=False, methods=['GET'])
-    def get_verify_users(self, request):  
-        user = user_object(request)
-        data = self.get_serializer(user)
-        return Response(data.data, status=status.HTTP_200_OK)  

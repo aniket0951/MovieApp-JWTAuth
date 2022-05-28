@@ -61,6 +61,7 @@ MIDDLEWARE = [
 
 THIRD_PARTY_APPS = [
     'Authentication',
+    'Merchent',
 
 ]
 
