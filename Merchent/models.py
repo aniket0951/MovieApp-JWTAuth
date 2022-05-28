@@ -39,3 +39,22 @@ class TheterInformation(MyBaseModel):
 
     is_verify = models.BooleanField(default=False,
                                     blank=True, null=True)                                                                       
+
+class Screens(MyBaseModel):
+
+    screen_name = models.CharField(max_length=255,
+                                   blank=False, 
+                                   null=False) 
+
+    screen_type = models.CharField(max_length=255,
+                                   blank=True,  
+                                   null=True, 
+                                   default="Class-3")
+
+    is_active = models.BooleanField(default=False,
+                                    blank=True,
+                                    null=True)
+
+    theter = models.ForeignKey(TheterInformation, 
+                               on_delete=models.CASCADE, 
+                               related_name="theter")                                                                                           
