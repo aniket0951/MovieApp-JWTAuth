@@ -57,4 +57,20 @@ class Screens(MyBaseModel):
 
     theter = models.ForeignKey(TheterInformation, 
                                on_delete=models.CASCADE, 
-                               related_name="theter")                                                                                           
+                               related_name="theter")
+
+class Seats(MyBaseModel):
+    seat_name = models.CharField(max_length=255,
+                                 blank=False,
+                                 null=False)
+
+    seat_price = models.IntegerField(blank=False,
+                                     null=False)
+
+    screen = models.ForeignKey(Screens,
+                               on_delete=models.CASCADE,
+                               blank=False,
+                               null=False,
+                               related_name="screen")
+
+    is_booked = models.BooleanField(default=False)                                                                                                                                                                                                                   
