@@ -111,7 +111,29 @@ class UsersInfo(BaseUser):
     otp_expiration_time = models.DateTimeField(
                                         blank=True,
                                         null=True,
-                                        verbose_name='OTP Key Expiration DateTime')                             
+                                        verbose_name='OTP Key Expiration DateTime')     
+
+    user_type = models.CharField(max_length=25,
+                                 default="AppUser",
+                                 blank=False,
+                                 null=False)                                                            
+
+class UserAddress(MyBaseModel):
+    country = models.CharField(max_length=255,
+                            blank=True,
+                            null=True,
+                            default="India")
+
+    state = models.CharField(max_length=255,
+                            blank=False,
+                            null=False)
+
+    city = models.CharField(max_length=255,
+                            blank=False,
+                            null=False)  
+
+    user = models.ForeignKey(UsersInfo, on_delete=models.CASCADE,
+                            related_name="user")                        
 
 class WhiteListedToken(models.Model):
     token = models.CharField(max_length=500)

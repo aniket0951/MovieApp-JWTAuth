@@ -29,7 +29,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-r_0xjrdb+8_*rycn5$$h+61j-=v4oqoh$q@bt%4-ew9z_p%nhy'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -61,7 +61,8 @@ MIDDLEWARE = [
 
 THIRD_PARTY_APPS = [
     'Authentication',
-
+    'Merchent',
+    'AdminUser',
 ]
 
 INSTALLED_APPS = INBUILDS_APPS + THIRD_PARTY_APPS
@@ -123,9 +124,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Created setting, JWT authentication
 JWT_AUTH = {
     'JWT_VERIFY_EXPIRATION': True,
-    'JWT_EXPIRATION_DELTA': timedelta(days=90),
+    'JWT_EXPIRATION_DELTA': timedelta(days=int(env('JWT_EXPIRATION_DELTA'))),
     'JWT_ALLOW_REFRESH': True,
-    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=90),
+    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=int(env('JWT_REFRESH_EXPIRATION_DELTA'))),
 }
 
 REST_FRAMEWORK = {
@@ -135,6 +136,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'Utils.custom_jwt_authentication.JSONWebTokenAuthentication',
     ),
+    'EXCEPTION_HANDLER': 'Utils.exception_handler.custom_exception_handler',
 }
 
 
