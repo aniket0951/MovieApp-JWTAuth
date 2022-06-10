@@ -8,10 +8,13 @@ from rest_framework.decorators import action
 from rest_framework import status
 from rest_framework.response import Response
 from Utils.exceptions import InvalidParameterException
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from Utils.custome_permissions import IsPatientUser, IsMerchentUser, BlacklistUpdateMethodPermission
 
 # Create your views here.
 class TheterInformationModelViewSetAPIView(ModelViewSet):
-    # model = TheterInformation
+    permission_classes = [IsAdminUser]
+    model = TheterInformation
     queryset = TheterInformation.objects.all()
     serializer_class = TheterInformationSerializer
 
@@ -24,6 +27,21 @@ class TheterInformationModelViewSetAPIView(ModelViewSet):
         "data": None,
         "message": None
     }
+
+    def get_permissions(self):
+        if self.action in ['list', 'create', ]:
+            permission_classes = [IsAuthenticated,]
+            return [permission() for permission in permission_classes]
+
+        if self.action in ['partial_update', 'retrieve', 'destroy']:
+            permission_classes = [IsMerchentUser]
+            return [permission() for permission in permission_classes]
+
+        if self.action == 'update':
+            permission_classes = [IsMerchentUser | BlacklistUpdateMethodPermission]
+            return [permission() for permission in permission_classes]
+
+        return super().get_permissions()
 
     @action(detail=False, methods=['GET'])
     def get_verify_theters(self, request):

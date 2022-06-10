@@ -1,3 +1,4 @@
+import re
 from rest_framework import permissions
 from Authentication.models import UsersInfo
 
@@ -21,6 +22,18 @@ class IsPatientUser(permissions.BasePermission):
             pass
         self.message = 'Patient has the permission to perform this action.'
         return False
+
+class IsMerchentUser(permissions.BasePermission):
+    message = 'You do not have permission to access this information.'
+
+    def has_object_permission(self, request, view, obj):
+        try:
+            if hasattr(request.user, 'mobile') and UsersInfo.objects.filter(mobile=request.user.mobile, user_type="AppUser").exists():
+                return True
+        except Exception:
+            pass
+        self.message = "Merchent has the permission to perform this action."
+        return False       
 
 def user_object(request):
     try:

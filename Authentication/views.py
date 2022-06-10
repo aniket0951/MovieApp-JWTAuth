@@ -24,7 +24,6 @@ from Merchent.serilizer import TheterInformationSerializer
 
 # Create your views here.
 class UsersInfoModelViewSetAPIView(ModelViewSet):
-    permission_classes = [AllowAny]
     model = UsersInfo
     queryset =  UsersInfo.objects.all()
     serializer_class = UsersInfoSerializer
