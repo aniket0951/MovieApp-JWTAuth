@@ -1,8 +1,9 @@
+from statistics import mode
 from django.db import models
 import uuid
 from Authentication.models import MyBaseModel, UsersInfo
 from phonenumber_field.modelfields import PhoneNumberField
-
+from datetime import date
 
 class TheterInformation(MyBaseModel):
     name = models.CharField(max_length=255, 
@@ -73,4 +74,4 @@ class Seats(MyBaseModel):
                                null=False,
                                related_name="screen")
 
-    is_booked = models.BooleanField(default=False)                                                                                                                                                                                                                   
+    is_booked = models.BooleanField(default=False) 

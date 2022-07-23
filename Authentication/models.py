@@ -1,3 +1,4 @@
+from tabnanny import verbose
 from django.db import models
 import uuid
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
@@ -42,7 +43,7 @@ class UserManager(BaseUserManager):
 
         user = self.model(mobile=mobile, password=password)
         user.set_password(password)
-        # user.is_active = True     Defualt value is True
+        user.is_active = True     
         user.save(using=self._db)
         return user
 
@@ -50,7 +51,7 @@ class UserManager(BaseUserManager):
         if password is None:
             raise TypeError('Superusers must have a password.')
         user = self.create_user(mobile=mobile, password=password)
-        # user.is_active = True     Defualt value is True
+        user.is_active = True     
         user.is_staff = True
         user.is_superuser = True
         user.save(using=self._db)
@@ -87,6 +88,7 @@ class BaseUser(AbstractBaseUser, PermissionsMixin, MyBaseModel):
     REQUIRED_FIELDS = []
     USERNAME_FIELD = 'mobile'
     objects = UserManager()
+    username = 'mobile'
 
     class Meta:
         verbose_name = "Base User"
@@ -117,6 +119,16 @@ class UsersInfo(BaseUser):
                                  default="AppUser",
                                  blank=False,
                                  null=False)                                                            
+    
+    # def __str__(self):
+    #     return self.first_name
+
+    def get_user_name(self):
+        return self.first_name 
+    
+    class Meta:
+        verbose_name = "Users"
+        verbose_name_plural = "Users"
 
 class UserAddress(MyBaseModel):
     country = models.CharField(max_length=255,
@@ -133,8 +145,17 @@ class UserAddress(MyBaseModel):
                             null=False)  
 
     user = models.ForeignKey(UsersInfo, on_delete=models.CASCADE,
-                            related_name="user")                        
+                            related_name="user") 
 
+    @property
+    def class_status(self):
+        if self.user.user_type == "Merchent":
+            return str("You are a merchant")
+        else:
+            return str(self.user.id)                                               
+    
+    def __str__(self) -> str:
+        return self.city
 class WhiteListedToken(models.Model):
     token = models.CharField(max_length=500)
     user = models.ForeignKey(BaseUser, related_name="token_user", on_delete=models.CASCADE)

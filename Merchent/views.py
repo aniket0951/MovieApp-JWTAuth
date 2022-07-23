@@ -94,3 +94,5 @@ class SeatsModelViewSetAPIView(ModelViewSet):
     retrieve_success_message = "Seat information has been retrieved successfully"
     update_success_message = "Seat information has been updated successfully"
     list_success_message = "Seat information has been returned successfully"
+
+    

@@ -40,6 +40,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INBUILDS_APPS = [
+    'admin_volt.apps.AdminVoltConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -128,6 +129,7 @@ JWT_AUTH = {
     'JWT_ALLOW_REFRESH': True,
     'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=int(env('JWT_REFRESH_EXPIRATION_DELTA'))),
 }
+from rest_framework.permissions import AllowAny
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
@@ -135,6 +137,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'Utils.custom_jwt_authentication.JSONWebTokenAuthentication',
+        # 'django.contrib.auth.backends.ModelBackend',
     ),
     'EXCEPTION_HANDLER': 'Utils.exception_handler.custom_exception_handler',
 }
@@ -156,6 +159,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
+SESSION_COOKIE_SECURE = True
 
 AUTH_USER_MODEL = 'Authentication.BaseUser'
 

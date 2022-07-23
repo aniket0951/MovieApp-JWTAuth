@@ -1,6 +1,9 @@
+from genericpath import exists
 import re
+from requests import request
 from rest_framework import permissions
 from Authentication.models import UsersInfo
+from Authentication.serializer import UsersInfoSerializer
 
 DO_NOT_HAVE_PERMISSION = "You do not have permission to do this action."
 
@@ -28,12 +31,23 @@ class IsMerchentUser(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         try:
-            if hasattr(request.user, 'mobile') and UsersInfo.objects.filter(mobile=request.user.mobile, user_type="AppUser").exists():
+            if hasattr(request.user, 'mobile') and UsersInfo.objects.filter(mobile=request.user.mobile, user_type="Merchent").exists():
                 return True
         except Exception:
             pass
         self.message = "Merchent has the permission to perform this action."
-        return False       
+        return False 
+
+class IsAdminUserProject(permissions.BasePermission):
+    message = 'You do not have permission to access this information.'
+    def has_permission(self, request, view):
+        try:
+            if UsersInfo.objects.filter(mobile=request.user.mobile, user_type="AdminUser").exists():
+                return True
+        except Exception:
+            pass
+        self.message = "Only Admi User have permission to do this information"
+        return False                   
 
 def user_object(request):
     try:

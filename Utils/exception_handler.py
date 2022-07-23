@@ -1,8 +1,8 @@
 import logging
 
 from django.contrib.humanize.templatetags.humanize import ordinal
-# from ratelimit.exceptions import Ratelimited
-from ratelimit.exception import RateLimitException as Ratelimited
+from ratelimit.exceptions import Ratelimited
+# from ratelimit.exception import RateLimitException as Ratelimited
 from rest_framework import status
 from rest_framework.exceptions import APIException
 from rest_framework.response import Response
